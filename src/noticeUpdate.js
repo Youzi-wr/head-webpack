@@ -18,11 +18,8 @@ function htmlDecode(str) {
 }
 
 function emotionDecode(input) {
-    var emotionMap = constant.emotionMap;
-
     var result = (htmlDecode(input.toString() || "")).replace(/(\[.*?])/ig, function ($0) {
-        var icon = emotionMap[$0];
-        return icon ? '<img src="' + icon + '">' : $0;
+        return $0;
     }).replace(/\[e](.*?)\[\/e]/ig, function ($0, $1) {
         return '<span class="single emotion emotion_emoji_' + $1 + '"></span>';
     });
@@ -41,13 +38,13 @@ function loadStyle(url) {
     var head = document.getElementsByTagName('head')[0];
     head.appendChild(link);
 }
-loadStyle('./main.scss');
+loadStyle('main.css');
 
 var noticeTemplate = `
     <li>
         <img class="co-cell" src="${CONTEXTPATH}{{avatarUrl}}" alt="">
         <div class="co-cell co-cell-left">
-            <div class="common-ell" title="{{content}}">{{content}}</div>
+            <div class="common-ell">{{content}}</div>
             <div>{{appendTime}}</div>
         </div>
     </li>`;
@@ -64,7 +61,7 @@ var transferNotice = function (obj) {
         var template = constant.notifications.types[item.type];
 
         var _data = {
-            content: regx(template, context),
+            content: emotionDecode(regx(template, context)),
             appendTime: item.appendTime,
             avatarUrl: item.avatarUrl
         }

@@ -40,34 +40,5 @@ module.exports = {
             "ADMIN": "管理员",
             "MEMBER": "成员"
         }
-    },
-    "emotionMap": {
-        "[开怀]": "/images/emotions/emo-01.png",
-        "[大笑]": "/images/emotions/emo-02.png",
-        "[眩晕]": "/images/emotions/emo-03.png",
-        "[微笑]": "/images/emotions/emo-04.png",
-        "[吐舌]": "/images/emotions/emo-05.png",
-
-        "[眯眼]": "/images/emotions/emo-06.png",
-        "[呲牙]": "/images/emotions/emo-07.png",
-        "[无语]": "/images/emotions/emo-08.png",
-        "[笑疯]": "/images/emotions/emo-09.png",
-        "[调皮]": "/images/emotions/emo-10.png",
-
-        "[呆笑]": "/images/emotions/emo-11.png",
-        "[挤眼]": "/images/emotions/emo-12.png",
-        "[黑脸]": "/images/emotions/emo-13.png",
-        "[撇嘴]": "/images/emotions/emo-14.png",
-        "[无辜]": "/images/emotions/emo-15.png",
-
-        "[凝视]": "/images/emotions/emo-16.png",
-        "[得意]": "/images/emotions/emo-17.png",
-        "[媚眼]": "/images/emotions/emo-18.png",
-        "[愉快]": "/images/emotions/emo-19.png",
-        "[伤心]": "/images/emotions/emo-20.png",
-
-        "[崇拜]": "/images/emotions/emo-21.png",
-        "[咖啡]": "/images/emotions/emo-22.png",
-        "[开枪]": "/images/emotions/emo-23.png"
     }
 }

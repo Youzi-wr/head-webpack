@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     entry: './src/index.js',
@@ -25,33 +24,5 @@ module.exports = {
         //       sourceMap: true
         //     })
         //   ]
-    },
-    plugins: [
-        new MiniCssExtractPlugin({
-            // Options similar to the same options in webpackOptions.output
-            // both options are optional
-            filename: "[name].css",
-            chunkFilename: "[id].css"
-        })
-    ],
-    module: {
-        rules: [{
-            test: /\.scss$/,
-            use: [
-                MiniCssExtractPlugin.loader,
-                "css-loader", // 将 CSS 转化成 CommonJS 模块
-                "sass-loader" // 将 Sass 编译成 CSS，默认使用 Node Sass
-            ]
-        }, {
-            test: /\.(png|jpg|gif)$/i,
-            use: [
-                {
-                    loader: 'url-loader',
-                    options: {
-                        // limit: 8192,
-                    }
-                },
-            ],
-        }]
     }
 };
