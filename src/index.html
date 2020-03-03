@@ -1,0 +1,99 @@
+<div id="coheadBell">
+    <span class="coheadBell_icon">
+        <svg t="1583127866009" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            p-id="3232" width="22" height="22">
+            <path
+                d="M515.842205 1024h-7.558626A161.347592 161.347592 0 0 1 348.874096 882.90565a27.521151 27.521151 0 0 1 54.557775-6.783383A106.596006 106.596006 0 0 0 508.283579 969.054604h7.558626a106.596006 106.596006 0 0 0 105.336235-92.932337 27.521151 27.521151 0 0 1 54.557774 6.783383 161.347592 161.347592 0 0 1-159.894009 141.09435z m412.817261-188.965648h-833.38696A27.521151 27.521151 0 0 1 67.848261 806.25343a288.584461 288.584461 0 0 1 103.688843-209.121983V392.854736a290.716381 290.716381 0 0 1 209.606511-277.92486 131.985237 131.985237 0 0 1 261.644743 0A290.716381 290.716381 0 0 1 852.78249 392.854736v204.373616a288.099934 288.099934 0 0 1 103.301221 209.121984 27.32734 27.32734 0 0 1-7.558626 20.156336 27.618056 27.618056 0 0 1-19.865619 8.52768zM125.991537 779.895145h772.433425a234.123592 234.123592 0 0 0-89.831362-147.780827A27.521151 27.521151 0 0 1 797.546378 610.5044V392.854736A235.770985 235.770985 0 0 0 610.518839 163.479512a27.32734 27.32734 0 0 1-21.803728-26.842813v-5.039084a77.039841 77.039841 0 0 0-153.982777 0v5.039084a27.424245 27.424245 0 0 1-21.803728 26.842813 235.770985 235.770985 0 0 0-186.446106 229.375224V610.5044a27.714962 27.714962 0 0 1-10.853412 21.900635A234.317403 234.317403 0 0 0 125.991537 779.895145z"
+                p-id="3233" fill="#3DB5F6"></path>
+        </svg>
+    </span>
+    <ul id="coheadBell_popup" class="co-dropdown">
+        <div class="co-count">dsds</div>
+    </ul>
+</div>
+
+<style>
+    .common-ell {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    #coheadBell {
+        display: inline-block;
+        position: relative;
+    }
+
+    #coheadBell .coheadBell_icon {
+        cursor: pointer;
+    }
+
+    #coheadBell .co-dropdown {
+        display: none;
+        position: absolute;
+        right: -14px;
+        top: 25px;
+        min-width: 160px;
+        margin: 10px 0;
+        padding: 0;
+        min-height: 50px;
+        box-shadow: 2px 2px 8px #ddd;
+        background-color: #fff;
+        z-index: 99;
+    }
+
+    #coheadBell .common-show {
+        display: block;
+    }
+
+    #coheadBell .co-dropdown:after {
+        content: " ";
+        position: absolute;
+        top: -14px;
+        right: 18px;
+        border: 7px solid transparent;
+        border-bottom: 7px solid #f6f6f6;
+    }
+
+    #coheadBell .co-dropdown .co-count {
+        padding: 10px;
+        width: 100%;
+        text-align: center;
+        color: #56BDF1;
+        border-bottom: 1px solid #ececec;
+        box-sizing: border-box;
+    }
+
+    #coheadBell .co-dropdown li {
+        display: table;
+        padding: 5px;
+        width: 100%;
+        box-sizing: border-box;
+        list-style: none;
+        color: #666;
+    }
+
+    #coheadBell .co-dropdown li img {
+        width: 40px;
+    }
+
+    #coheadBell .co-dropdown img.co-cell {
+        width: 40px;
+        height: 40px;
+    }
+
+    #coheadBell .co-dropdown .co-cell {
+        display: table-cell;
+        vertical-align: top;
+        padding: 0 3px;
+    }
+
+    #coheadBell .co-dropdown .co-cell-left {
+        text-align: left;
+        max-width: 300px;
+    }
+
+    #coheadBell .co-dropdown .co-cell-left .action {
+        color: #56BDF1;
+    }
+</style>

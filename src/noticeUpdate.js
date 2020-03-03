@@ -33,6 +33,16 @@ function regx(template, context) {
     return template.replace(/\{\{(.*?)\}\}/g, (match, key) => context[key.trim()]);
 }
 
+function loadStyle(url) {
+    var link = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.href = url;
+    var head = document.getElementsByTagName('head')[0];
+    head.appendChild(link);
+}
+loadStyle('./main.scss');
+
 var noticeTemplate = `
     <li>
         <img class="co-cell" src="${CONTEXTPATH}{{avatarUrl}}" alt="">
