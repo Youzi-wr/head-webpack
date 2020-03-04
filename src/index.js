@@ -1,9 +1,12 @@
 // -------------------------------------------------------------- 
 var io = require('socket.io-client');
-var http = require('./axios.js');
-var transferNotice = require('./noticeUpdate');
+var http = require('./http');
+var notifications = require('./noticeUpdate');
 
-var CONTEXTPATH = 'https://192.168.12.106';
+require('./emotion.css');
+require('./bell.css');
+
+var CONTEXTPATH = 'https://192.168.12.105';
 
 var bellTmpl = '';
 http.get('/html').then(res => {
@@ -19,12 +22,12 @@ var CommonBell = function (id) {
     this._socket = null;
 
     this.render();
-    this.creatSocketIO();
+    this.checkLogin();
 }
 
 CommonBell.prototype = {
     render: function () {
-        var parent = document.getElementById(this.id);  //判断置顶
+        var parent = _$(this.id);  //判断置顶
         var bell = document.createElement('div');
         bell.setAttribute('id', 'commonBell');
         bell.innerHTML = bellTmpl;
@@ -33,45 +36,57 @@ CommonBell.prototype = {
         this.addEvent();
     },
     addEvent: function () {
-        var eleBell = document.getElementById(this.id); //为动态添加的元素添加事件
-        var eleBellPopup = document.getElementById('coheadBell_popup');
-        eleBell.addEventListener('click', function () {
-            var classList = eleBellPopup.classList;
-            if (classList.contains("common-show")) {
-                classList.remove('common-show')
-            } else {
-                classList.add("common-show")
-            }
+        var self = this;
+        this.querySelector('#commonBell .coheadBell_icon').addEventListener('click', function (event) {
+            _toggle(this.nextElementSibling, "common-show");
         })
     },
-    creatSocketIO: function () {
+    checkLogin: function () {
         var self = this;
+        http.get(CONTEXTPATH + '/uz-accountmgr/api/account/login').then(function (res) {
+            if (res.success) {
+                self.creatSocketIO(res.data);
+            } else {
+                // loign error
+            }
+        });
+    },
+    creatSocketIO: function (user) {
+        var self = this;
+
         this._socket = io(CONTEXTPATH);
 
         this._socket.on('notification', function (data) {
             if (!data) return;
             data = JSON.parse(data);
 
+            // console.log(data);
+
+            self.updateIcon();
             self.refreshNotificationList();
+            self.soundAlert(data);
         });
 
-        this.connect(); //TODO: checkLogin
-        self.refreshNotificationList(); //test
+        this.connect(user);
+        this.refreshNotificationList();
+    },
+    updateIcon: function () {
+        var coheadBell_svg = this.querySelector('#commonBell .coheadBell_icon .common-hide');
+        var sibling = _sibling(coheadBell_svg);
+        _removeClass(coheadBell_svg, "common-hide");
+        _addClass(sibling, "common-hide");
     },
     refreshNotificationList: function () {
-        // http.get(CONTEXTPATH + '/sns/api/notification/load/recent').then(function (res) {
-        //     debugger
-        // })
-        var data = { "success": true, "errorCode": 0, "message": null, "data": { "count": 20, "notifications": [{ "notificationId": 3608858177570816, "receiverId": 3587208977745920, "type": "AtUserInComment", "returnUrl": "/app/user/post/inbox/3587214861568000/false#l3608858177325056", "content": { "referenceWords": "@wr1 [e]13[/e]<span>hi hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh</span>[e]97[/e]", "from": "wr2", "target": "__ChatRoom_OtherUserName:wr2,wr1" }, "appendTime": 1582020964580, "avatarUrl": "/user_statics/3587209361229824/Default.PNG", "fromUserId": null, "toUserId": null, "message": null, "params": null, "read": false }, { "notificationId": 3608846880425984, "receiverId": 3587208977745920, "type": "AtUserInComment", "returnUrl": "/app/user/post/inbox/3587214861568000/false#l3608846880196608", "content": { "referenceWords": "@wr1 [e]97[/e]", "from": "wr2", "target": "__ChatRoom_OtherUserName:wr2,wr1" }, "appendTime": 1582020275057, "avatarUrl": "/user_statics/3587209361229824/Default.PNG", "fromUserId": null, "toUserId": null, "message": null, "params": null, "read": false }, { "notificationId": 3608658124883968, "receiverId": 3587208977745920, "type": "AtUserInComment", "returnUrl": "/app/user/post/inbox/3587214861568000/false#l3608658124654592", "content": { "referenceWords": "", "from": "wr2", "target": "__ChatRoom_OtherUserName:wr2,wr1" }, "appendTime": 1582008754333, "avatarUrl": "/user_statics/3587209361229824/Default.PNG", "fromUserId": null, "toUserId": null, "message": null, "params": null, "read": false }, { "notificationId": 3608657241835520, "receiverId": 3587208977745920, "type": "AtUserInComment", "returnUrl": "/app/user/post/inbox/3587214861568000/false#l3608657241622528", "content": { "referenceWords": "", "from": "wr2", "target": "__ChatRoom_OtherUserName:wr2,wr1" }, "appendTime": 1582008700436, "avatarUrl": "/user_statics/3587209361229824/Default.PNG", "fromUserId": null, "toUserId": null, "message": null, "params": null, "read": false }, { "notificationId": 3608656343697408, "receiverId": 3587208977745920, "type": "AtUserInComment", "returnUrl": "/app/user/post/inbox/3587214861568000/false#l3608656343435264", "content": { "referenceWords": "", "from": "wr2", "target": "__ChatRoom_OtherUserName:wr2,wr1" }, "appendTime": 1582008645618, "avatarUrl": "/user_statics/3587209361229824/Default.PNG", "fromUserId": null, "toUserId": null, "message": null, "params": null, "read": false }] } };
-        var html = document.createElement('div'); // is a node
-        html.innerHTML = transferNotice(data);
-        document.getElementById('coheadBell_popup').appendChild(html);
+        var self = this;
+        http.get(CONTEXTPATH + '/sns/api/notification/load/recent').then(function (res) {
+            if (!res.success) return '';
+            self.querySelector('#coheadBell_popup').innerHTML = notifications.popup(res.data);
+        });
     },
-    connect: function () {
-        var user = {
-            id: 3587208977745920,
-            registerName: 'wr1'
-        };
+    soundAlert: function (data) {
+        notifications.alert(data);
+    },
+    connect: function (user) {
         if (user) {
             this._socket.emit("user_enter", {
                 id: user.id,
@@ -79,15 +94,43 @@ CommonBell.prototype = {
             });
         }
     },
-    disconnect: function () {
-        var user = {
-            id: 3587208977745920,
-            registerName: 'wr1'
-        };
+    disconnect: function (user) {
         if (user) {
             this._socket.emit("user_exit");
         }
+    },
+    querySelector(cl) {
+        return _$$(`#${this.id} ${cl}`);
     }
+}
+
+function _addClass(dom, className) {
+    dom.classList.add(className);
+}
+
+function _removeClass(dom, className) {
+    dom.classList.remove(className);
+}
+
+function _toggle(dom, className) {
+    var classList = dom.classList;
+    if (classList.contains(className)) {
+        classList.remove(className);
+    } else {
+        classList.add(className);
+    }
+}
+
+function _sibling(dom) {
+    return dom.nextElementSibling || dom.previousElementSibling;
+}
+
+function _$(id) {
+    return document.getElementById(id);
+}
+
+function _$$(className) {
+    return document.querySelector(className);
 }
 
 function regx(template, context) {

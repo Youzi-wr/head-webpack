@@ -1,6 +1,6 @@
 var axios = require('axios')
 
-var access_token = "3c8b681a-729b-471e-8551-0b63f0890f84"; //TODO
+var access_token = "e74ec8d9-0649-461f-b2b3-92bcb5133ed3"; //TODO
 
 axios.interceptors.request.use(config => {
     config.headers.Authorization = 'Bearer ' + access_token;

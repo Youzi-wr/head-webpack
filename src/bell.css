@@ -1,0 +1,89 @@
+.common-ell {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.common-hide {
+    display: none;
+}
+
+#coheadBell {
+    display: inline-block;
+    position: relative;
+}
+
+#coheadBell .coheadBell_icon {
+    display: inline-block;
+    cursor: pointer;
+}
+
+#coheadBell .co-dropdown {
+    display: none;
+    position: absolute;
+    right: -14px;
+    top: 25px;
+    margin: 10px 0;
+    padding: 0;
+    min-width: 160px;
+    min-height: 50px;
+    box-shadow: 2px 2px 8px #ddd;
+    background-color: #fff;
+    z-index: 99;
+    font-size: 14px;
+}
+
+#coheadBell .common-show {
+    display: block;
+}
+
+#coheadBell .co-dropdown:after {
+    content: " ";
+    position: absolute;
+    top: -14px;
+    right: 18px;
+    border: 7px solid transparent;
+    border-bottom: 7px solid #f6f6f6;
+}
+
+#coheadBell .co-dropdown .co-count {
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    color: #56BDF1;
+    border-bottom: 1px solid #ececec;
+    box-sizing: border-box;
+}
+
+#coheadBell .co-dropdown li {
+    display: table;
+    table-layout: fixed;
+    padding: 5px;
+    box-sizing: border-box;
+    list-style: none;
+    color: #666;
+}
+
+#coheadBell .co-dropdown li img {
+    width: 40px;
+}
+
+#coheadBell .co-dropdown img.co-cell {
+    width: 40px;
+    height: 40px;
+}
+
+#coheadBell .co-dropdown .co-cell {
+    display: table-cell;
+    vertical-align: top;
+    padding: 0 3px;
+}
+
+#coheadBell .co-dropdown .co-cell-left {
+    text-align: left;
+    max-width: 300px;
+}
+
+#coheadBell .co-dropdown .co-cell-left .action {
+    color: #56BDF1;
+}

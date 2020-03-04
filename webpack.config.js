@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-
+const env = process.env;
+console.log(env)
 module.exports = {
     entry: './src/index.js',
     output: {
@@ -24,5 +25,15 @@ module.exports = {
         //       sourceMap: true
         //     })
         //   ]
+    },
+    module: {
+        rules: [{
+            test: /\.css$/,
+            use: [{
+                loader: 'style-loader' //运行时动态插入style标签到head标签中让CSS代码生效
+            }, {
+                loader: 'css-loader'//加载css文件,使得css文件中引用资源模块化
+            }]
+        }]
     }
 };

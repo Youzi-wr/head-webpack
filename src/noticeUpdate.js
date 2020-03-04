@@ -1,6 +1,7 @@
-var constant = require('./noticeTmpl.js');
+var constant = require('./noticeTmpl');
+var notification = require('./alert');
 
-var CONTEXTPATH = 'https://192.168.12.106';
+var CONTEXTPATH = 'https://192.168.12.105';
 
 function htmlDecode(str) {
     str = str.replace(/&#(x)?([^&]{1,5});?/g, function ($, $1, $2) {
@@ -30,15 +31,27 @@ function regx(template, context) {
     return template.replace(/\{\{(.*?)\}\}/g, (match, key) => context[key.trim()]);
 }
 
-function loadStyle(url) {
-    var link = document.createElement('link');
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    link.href = url;
-    var head = document.getElementsByTagName('head')[0];
-    head.appendChild(link);
+function cleanHtmlTags(str) {
+    return str.replace(/<.*?>/ig, '');
 }
-loadStyle('main.css');
+
+var windowFocusHandler = function () {
+    setTimeout(function () {
+        window.sessionStorage.setItem("xt_focus_win_state", "focus");
+    }, 100);
+};
+
+var windowBlurHandler = function () {
+    window.sessionStorage.setItem("xt_focus_win_state", "blur");
+};
+
+var destroyHandler = function () {
+    window.removeEventListener('focus', windowFocusHandler);
+    window.removeEventListener('blur', windowBlurHandler);
+};
+
+window.addEventListener('focus', windowFocusHandler);
+window.addEventListener('blur', windowBlurHandler);
 
 var noticeTemplate = `
     <li>
@@ -49,26 +62,135 @@ var noticeTemplate = `
         </div>
     </li>`;
 
-var transferNotice = function (obj) {
-    if (!obj.success) return '';
+function Notifications() { }
 
-    var data = obj.data;
-    var list = data.notifications;
-    var decodeList = '';
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        var context = item.params || item.content;
-        var template = constant.notifications.types[item.type];
+Notifications.prototype = {
+    popup: function (data) {
+        var list = data.notifications;
+        var decodeList = '';
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+            var context = item.params || item.content;
+            var template = constant.notifications.types[item.type];
 
-        var _data = {
-            content: emotionDecode(regx(template, context)),
-            appendTime: item.appendTime,
-            avatarUrl: item.avatarUrl
+            var _data = {
+                content: emotionDecode(regx(template, context)),
+                appendTime: item.appendTime,
+                avatarUrl: item.avatarUrl
+            }
+
+            decodeList += regx(noticeTemplate, _data);
         }
+        return decodeList;
+    },
+    alert: function (data) {
+        var note;
+        if (data.isEditing) {
+            note = notification('在线编辑', {
+                focusWindowOnClick: true,
+                delay: 6000,
+                dir: 'auto',
+                lang: 'en',
+                icon: 'xietong_logo_single.png',
+                tag: 'xt-tag',
+                body: '邀请您来在线编辑文件'
+            });
 
-        decodeList += regx(noticeTemplate, _data);
+            // for xt desktop client
+            if (typeof window.cefQuery !== 'undefined') {
+                var prefix = 'DekstopNotification:';
+                window.cefQuery({ request: prefix });
+            }
+        } else if (data.isJoinConference) {
+            note = notification('视频会议', {
+                focusWindowOnClick: true,
+                delay: 6000,
+                dir: 'auto',
+                lang: 'en',
+                icon: 'xietong_logo_single.png',
+                tag: 'xt-tag',
+                body: '邀请您参加视频会议'
+            });
+
+            // for xt desktop client
+            if (typeof window.cefQuery !== 'undefined') {
+                window.cefQuery({ request: 'DekstopNotification:' });
+            }
+        } else {
+            // 2) display desktop notification if window is inactived
+            var winState = window.sessionStorage.getItem("xt_focus_win_state");
+
+            if (winState === "blur") {
+                var type = data.notification.type;
+                var content = data.notification.content;
+
+                if (typeof content.target === 'string' && /\{.*?}/.test(content.target) === false) {
+                    content.target = cleanHtmlTags(
+                        htmlDecode(content.target)
+                    );
+
+                    if (typeof content.referenceWords === 'string') {
+                        content.referenceWords = cleanHtmlTags(
+                            htmlDecode(content.referenceWords)
+                        );
+                    }
+
+                    if (typeof content.minute === 'string' || typeof content.minute === 'number') {
+                        content.minute = cleanHtmlTags(
+                            htmlDecode("" + content.minute)
+                        );
+                    }
+
+                    // commonService.getMessageByKey("notifications.types." + type, content).then(function (msgContent) {
+                    //     commonService.getMessageByKey("notifications.desktop").then(function (msgTitle) {
+                    var msgContent = regx(constant.notifications.types[type], content);
+                    var msgTitle = constant.notifications.desktop;
+                    var msgBody = msgContent.replace(/<.*?>/ig, "");
+
+                    var note = notification(msgTitle, {
+                        // focusWindowOnClick: true,
+                        delay: 6000,
+                        dir: 'auto',
+                        lang: 'en',
+                        icon: './xietong_logo_single.png',
+                        // tag: 'xt-tag',  //??!!
+                        body: msgBody,
+                        data: data.notification
+                    });
+
+                    note.on('click', function (event) {
+                        var data = event.target.data;
+                        var url = data.returnUrl;
+                        // var toOwner = data.content.toOwner ? data.content.toOwner.substring(1) : $rootScope.user.id;
+
+                        // if (data.type === "FileSharing") {
+                        //     url = '/app/group/' + toOwner + '/filebox/share//';
+                        //     window.location.replace(url);
+                        // } else 
+
+                        if (url) {
+                            if (url.indexOf('/members') > -1) {
+                                url = '/app/user/contact/group/' + url.split('/')[3];
+                            }
+                            window.location.replace(url);
+                        } else {
+                            window.focus();
+                        }
+                    });
+
+                    // for xt desktop client
+                    if (typeof window.cefQuery !== 'undefined') {
+                        var prefix = 'DekstopNotification:';
+                        window.cefQuery({ request: prefix + msgBody });
+                    }
+                    //     });
+                    // });
+                }
+            }
+        }
     }
-    return decodeList;
 }
 
-module.exports = transferNotice;
+var notifications = new Notifications();
+
+module.exports = notifications;
