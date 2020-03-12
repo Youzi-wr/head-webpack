@@ -8,17 +8,17 @@
     display: none;
 }
 
-#coheadBell {
+#commonBell {
     display: inline-block;
     position: relative;
 }
 
-#coheadBell .coheadBell_icon {
+#commonBell .coheadBell_icon {
     display: inline-block;
     cursor: pointer;
 }
 
-#coheadBell .co-dropdown {
+#commonBell .co-dropdown {
     display: none;
     position: absolute;
     right: -14px;
@@ -33,11 +33,11 @@
     font-size: 14px;
 }
 
-#coheadBell .common-show {
+#commonBell .common-show {
     display: block;
 }
 
-#coheadBell .co-dropdown:after {
+#commonBell .co-dropdown:after {
     content: " ";
     position: absolute;
     top: -14px;
@@ -46,7 +46,7 @@
     border-bottom: 7px solid #f6f6f6;
 }
 
-#coheadBell .co-dropdown .co-count {
+#commonBell .co-dropdown .co-count {
     padding: 10px;
     width: 100%;
     text-align: center;
@@ -55,7 +55,7 @@
     box-sizing: border-box;
 }
 
-#coheadBell .co-dropdown li {
+#commonBell .co-dropdown li {
     display: table;
     table-layout: fixed;
     padding: 5px;
@@ -64,26 +64,26 @@
     color: #666;
 }
 
-#coheadBell .co-dropdown li img {
+#commonBell .co-dropdown li img {
     width: 40px;
 }
 
-#coheadBell .co-dropdown img.co-cell {
+#commonBell .co-dropdown img.co-cell {
     width: 40px;
     height: 40px;
 }
 
-#coheadBell .co-dropdown .co-cell {
+#commonBell .co-dropdown .co-cell {
     display: table-cell;
     vertical-align: top;
     padding: 0 3px;
 }
 
-#coheadBell .co-dropdown .co-cell-left {
+#commonBell .co-dropdown .co-cell-left {
     text-align: left;
     max-width: 300px;
 }
 
-#coheadBell .co-dropdown .co-cell-left .action {
+#commonBell .co-dropdown .co-cell-left .action {
     color: #56BDF1;
 }

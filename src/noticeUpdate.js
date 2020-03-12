@@ -1,7 +1,7 @@
 var constant = require('./noticeTmpl');
 var notification = require('./alert');
 
-var CONTEXTPATH = 'https://192.168.12.105';
+var CONTEXTPATH = 'https://192.168.12.166';
 
 function htmlDecode(str) {
     str = str.replace(/&#(x)?([^&]{1,5});?/g, function ($, $1, $2) {

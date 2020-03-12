@@ -1,6 +1,6 @@
 var axios = require('axios')
 
-var access_token = "e74ec8d9-0649-461f-b2b3-92bcb5133ed3"; //TODO
+var access_token = ""; //TODO
 
 axios.interceptors.request.use(config => {
     config.headers.Authorization = 'Bearer ' + access_token;
@@ -29,8 +29,10 @@ axios.interceptors.response.use(function (response) {
 });
 
 module.exports =  {
-    get: function (url, params = {}) {
-        return axios(url, { params: params });
+    get: function (url, token) {
+        access_token = token;  ; //TODO
+        // return axios(url, { params: params });
+        return axios(url);
     },
     post: function (url, data) {
         var headers = {
